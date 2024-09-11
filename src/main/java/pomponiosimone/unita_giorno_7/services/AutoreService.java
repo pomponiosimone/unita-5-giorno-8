@@ -1,71 +1,47 @@
 package pomponiosimone.unita_giorno_7.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pomponiosimone.unita_giorno_7.entities.Autore;
 import pomponiosimone.unita_giorno_7.exceptions.NotFoundException;
+import pomponiosimone.unita_giorno_7.repositories.AutoreRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class AutoreService {
 
+    @Autowired
+    private AutoreRepository autoreRepository;
 
-    public List<Autore> autoreList = new ArrayList<>();
-
-    // tutti gli autori
+    // Restituisce tutti gli autori
     public List<Autore> findAll() {
-        return this.autoreList;
+        return autoreRepository.findAll();
     }
 
-    //Salvataggio creazione
+    // Salvataggio creazione
     public Autore saveAutore(Autore body) {
-        Random rndm = new Random();
-        body.setId(rndm.nextInt(1, 100));
-       ;
-       body.setAvatar("https://ui-avatars.com/api/?name="+body.getNome()+ "+" + body.getCognome());
-
-        this.autoreList.add(body);
-        return body;
+        body.setAvatar("https://ui-avatars.com/api/?name=" + body.getNome() + "+" + body.getCognome());
+        return autoreRepository.save(body);
     }
 
     // Trova tramite id
     public Autore findById(int autoreId) {
-        Autore found = null;
-        for (Autore autore : this.autoreList) {
-            if (autore.getId() == autoreId) found = autore;
-        }
-        if (found == null) throw new NotFoundException(autoreId);
-        return found;
+        return autoreRepository.findById(autoreId)
+                .orElseThrow(() -> new NotFoundException(autoreId));
     }
 
-//trova tramite id e modifica
-
+    // Trova tramite id e modifica
     public Autore findByIdAndUpdate(int autoreId, Autore updatedAutore) {
-        Autore found = null;
-        for (Autore autore : this.autoreList) {
-            if (autore.getId() == autoreId) {
-                found = autore;
-                found.setNome(updatedAutore.getNome());
-                found.setCognome(updatedAutore.getCognome());
-            }
-        }
-        if (found == null) throw new NotFoundException(autoreId);
-        return found;
-
+        Autore found = findById(autoreId);
+        found.setNome(updatedAutore.getNome());
+        found.setCognome(updatedAutore.getCognome());
+        return autoreRepository.save(found);
     }
-    //trova tramite id e elimina
 
+    // Trova tramite id e elimina
     public void findByIdAndDelete(int autoreId) {
-        Autore found = null;
-        for (Autore autore : this.autoreList) {
-            if (autore.getId() == autoreId) found = autore;
-        }
-        if (found == null) throw new NotFoundException(autoreId);
-        this.autoreList.remove(found);}}
-
-
-
-
-
+        Autore found = findById(autoreId);
+        autoreRepository.delete(found);
+    }
+}
