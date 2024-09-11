@@ -1,10 +1,9 @@
 package pomponiosimone.unita_giorno_7.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 
 @Setter
@@ -14,9 +13,14 @@ import lombok.*;
 
 @Entity
 @Table(name = "Autore")
+
 public class Autore {
+    @OneToMany
+    @JoinColumn(name = "BlogPost_id")
+    private List<BlogPost> blogPost;
     @Id
 @GeneratedValue
+
 
     private int id;
     private String nome;

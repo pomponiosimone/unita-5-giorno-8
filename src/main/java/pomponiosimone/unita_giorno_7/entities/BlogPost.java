@@ -1,9 +1,6 @@
 package pomponiosimone.unita_giorno_7.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -16,9 +13,11 @@ import java.util.UUID;
 @Table(name= "BlogPost")
 public class BlogPost
 {
+    @ManyToOne
+    @JoinColumn(name = "autore_id")
+    private Autore autore;
     @Id
     @GeneratedValue
-
     private int id;
     private String categoria;
     private String titolo;
